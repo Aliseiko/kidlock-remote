@@ -225,10 +225,12 @@ class AdminActivity : AppCompatActivity() {
     }
 
     private fun setupEditTextKeyboard(editText: EditText) {
+        // Клавиатура — только по явному клику на поле: D-pad-фокус при навигации
+        // по разделам не должен её открывать. Потеря фокуса — клавиатуру прячем.
         editText.setOnFocusChangeListener { view, hasFocus ->
-            if (hasFocus) {
+            if (!hasFocus) {
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+                imm.hideSoftInputFromWindow(view.windowToken, 0)
             }
         }
         editText.setOnClickListener {
@@ -266,6 +268,13 @@ class AdminActivity : AppCompatActivity() {
     }
 
     private fun updateSectionVisibility(sectionId: Int) {
+        // Смена раздела: убрать клавиатуру и сбросить фокус с полей ввода
+        currentFocus?.let {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(it.windowToken, 0)
+            it.clearFocus()
+        }
+
         layoutSectionDashboard.visibility = if (sectionId == 1) View.VISIBLE else View.GONE
         layoutSectionSettings.visibility = if (sectionId == 2) View.VISIBLE else View.GONE
         layoutSectionAccess.visibility = if (sectionId == 3) View.VISIBLE else View.GONE
