@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- App name -->
-    <string name="app_name">Lodo-Lock</string>
+    <string name="app_name">KidLock</string>
 
     <!-- Main screen -->
     <string name="remaining_time_placeholder">0:00:00</string>
@@ -88,7 +88,7 @@
     <string name="overlay_granted">Autorisé</string>
     <string name="overlay_denied">Non autorisé</string>
     <string name="overlay_settings_button">Configurer la superposition</string>
-    <string name="overlay_instructions">Pour afficher l\'interface Lodo-Lock par-dessus les autres applications (blocage), vous devez accorder la permission de superposition :\n\n1. Appuyez sur « Configurer la superposition »\n2. Trouvez « Lodo-Lock » dans la liste des applications\n3. Activez « Autoriser l\'affichage par-dessus les autres applications »\n4. Revenez à l\'application.</string>
+    <string name="overlay_instructions">Pour afficher l\'interface KidLock par-dessus les autres applications (blocage), vous devez accorder la permission de superposition :\n\n1. Appuyez sur « Configurer la superposition »\n2. Trouvez « KidLock » dans la liste des applications\n3. Activez « Autoriser l\'affichage par-dessus les autres applications »\n4. Revenez à l\'application.</string>
 
     <!-- PIN input -->
     <string name="enter_pin_title">Entrez le code PIN</string>
@@ -106,12 +106,12 @@
     <string name="rate_limit_reached">5 tentatives échouées. Verrouillé 60 secondes.</string>
 
     <!-- Services and notifications -->
-    <string name="accessibility_service_description">Service Lodo-Lock de contrôle du temps d\'écran sur Android TV. Activez ce service pour le blocage automatique des applications lorsque le temps est écoulé. Sans ce service, l\'application ne pourra pas bloquer l\'accès aux autres applications.</string>
+    <string name="accessibility_service_description">Service KidLock de contrôle du temps d\'écran sur Android TV. Activez ce service pour le blocage automatique des applications lorsque le temps est écoulé. Sans ce service, l\'application ne pourra pas bloquer l\'accès aux autres applications.</string>
     <string name="time_limit_reached">Limite de temps atteinte</string>
     <string name="time_limit_reached_message">Le temps d\'utilisation est terminé. Entrez un code pour continuer.</string>
     <string name="time_limit_notifications">Notifications de limite de temps</string>
-    <string name="accessibility_instructions">Pour activer le blocage des applications, vous devez activer le service d\'accessibilité :\n\n1. Appuyez sur « Configurer le service d\'accessibilité »\n2. Trouvez « Lodo-Lock » dans la liste des services\n3. Activez le bouton à côté de Lodo-Lock\n4. Confirmez l\'activation du service\n\nUne fois activé, le service bloquera automatiquement les applications lorsque le temps sera écoulé.</string>
-    <string name="usage_stats_instructions">Pour suivre le temps d\'utilisation des applications, vous devez accorder la permission des statistiques d\'utilisation :\n\n1. Appuyez sur « Configurer les statistiques d\'utilisation »\n2. Trouvez « Lodo-Lock » dans la liste des applications\n3. Activez « Autoriser l\'accès aux statistiques d\'utilisation »\n4. Revenez à l\'application\n\nSans cette permission, l\'application ne pourra pas suivre le temps d\'utilisation des autres applications.</string>
+    <string name="accessibility_instructions">Pour activer le blocage des applications, vous devez activer le service d\'accessibilité :\n\n1. Appuyez sur « Configurer le service d\'accessibilité »\n2. Trouvez « KidLock » dans la liste des services\n3. Activez le bouton à côté de KidLock\n4. Confirmez l\'activation du service\n\nUne fois activé, le service bloquera automatiquement les applications lorsque le temps sera écoulé.</string>
+    <string name="usage_stats_instructions">Pour suivre le temps d\'utilisation des applications, vous devez accorder la permission des statistiques d\'utilisation :\n\n1. Appuyez sur « Configurer les statistiques d\'utilisation »\n2. Trouvez « KidLock » dans la liste des applications\n3. Activez « Autoriser l\'accès aux statistiques d\'utilisation »\n4. Revenez à l\'application\n\nSans cette permission, l\'application ne pourra pas suivre le temps d\'utilisation des autres applications.</string>
 
     <!-- Time formatting -->
     <string name="time_format_hours_minutes">%1$d h %2$d min</string>
@@ -199,25 +199,25 @@
     <string name="btn_activate_device_admin">Activer la protection</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_welcome_title">Bienvenue sur Lodo-Lock</string>
+    <string name="onboarding_welcome_title">Bienvenue sur KidLock</string>
     <string name="onboarding_welcome_description">Configurez la protection du temps d\'écran en quelques étapes.</string>
     <string name="onboarding_start_button">Commencer la configuration</string>
 
     <string name="onboarding_accessibility_title">Permission d\'accessibilité</string>
     <string name="onboarding_accessibility_description">Nécessaire pour bloquer les applications et contrôler le temps d\'écran.</string>
-    <string name="onboarding_accessibility_steps">1. Ouvrez les paramètres d\'accessibilité.\n2. Trouvez Lodo-Lock dans la liste des services.\n3. Activez le bouton et confirmez.\n4. Revenez à l\'application.</string>
+    <string name="onboarding_accessibility_steps">1. Ouvrez les paramètres d\'accessibilité.\n2. Trouvez KidLock dans la liste des services.\n3. Activez le bouton et confirmez.\n4. Revenez à l\'application.</string>
     <string name="onboarding_accessibility_status_placeholder">État : --</string>
     <string name="onboarding_accessibility_status_format">État : %s</string>
 
     <string name="onboarding_usage_stats_title">Permission d\'accès à l\'utilisation</string>
     <string name="onboarding_usage_stats_description">Nécessaire pour suivre le temps d\'utilisation des applications.</string>
-    <string name="onboarding_usage_stats_steps">1. Ouvrez les paramètres d\'accès à l\'utilisation.\n2. Sélectionnez Lodo-Lock dans la liste des applications.\n3. Activez l\'accès aux statistiques d\'utilisation.\n4. Revenez à l\'application.</string>
+    <string name="onboarding_usage_stats_steps">1. Ouvrez les paramètres d\'accès à l\'utilisation.\n2. Sélectionnez KidLock dans la liste des applications.\n3. Activez l\'accès aux statistiques d\'utilisation.\n4. Revenez à l\'application.</string>
     <string name="onboarding_usage_stats_status_placeholder">État : --</string>
     <string name="onboarding_usage_stats_status_format">État : %s</string>
     <string name="onboarding_usage_stats_warning">Vous pouvez ignorer cette étape, mais les limites peuvent être inexactes.</string>
 
     <string name="onboarding_autostart_title">Démarrage automatique</string>
-    <string name="onboarding_autostart_description">Lancer automatiquement Lodo-Lock au démarrage de l\'appareil, pour que le blocage soit toujours actif.</string>
+    <string name="onboarding_autostart_description">Lancer automatiquement KidLock au démarrage de l\'appareil, pour que le blocage soit toujours actif.</string>
     <string name="onboarding_autostart_enable">Oui, activer le démarrage automatique</string>
 
     <string name="onboarding_time_limit_title">Limite journalière de base</string>

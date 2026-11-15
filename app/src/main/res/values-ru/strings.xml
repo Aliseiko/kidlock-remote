@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Lodo-Lock</string>
+    <string name="app_name">KidLock</string>
     <string name="remaining_time_placeholder">0:00:00</string>
     <string name="remaining_time_format">%s</string>
     <string name="enter_code">Введите код для продления времени</string>
@@ -145,12 +145,12 @@
     <string name="overlay_granted">Разрешено</string>
     <string name="overlay_denied">Не разрешено</string>
     <string name="overlay_settings_button">Настроить наложение окон</string>
-    <string name="overlay_instructions">Чтобы показывать блокировку поверх других приложений, выдайте разрешение на наложение окон:\n\n1. Нажмите «Настроить наложение окон»\n2. Найдите «Lodo-Lock» в списке приложений\n3. Включите «Поверх других окон»\n4. Вернитесь в приложение.</string>
+    <string name="overlay_instructions">Чтобы показывать блокировку поверх других приложений, выдайте разрешение на наложение окон:\n\n1. Нажмите «Настроить наложение окон»\n2. Найдите «KidLock» в списке приложений\n3. Включите «Поверх других окон»\n4. Вернитесь в приложение.</string>
     <string name="code_activated_schedule_hint">Добавлено минут: %d. Используйте PIN для разблокировки расписания.</string>
     <string name="rate_limit_lockout">Слишком много попыток. Повторите через %d с</string>
     <string name="rate_limit_reached">5 неудачных попыток. Блокировка на 60 секунд.</string>
-    <string name="accessibility_instructions">Для блокировки приложений включите службу специальных возможностей:\n\n1. Нажмите «Настроить службу специальных возможностей»\n2. Найдите «Lodo-Lock» в списке служб\n3. Включите переключатель рядом с Lodo-Lock\n4. Подтвердите включение службы\n\nПосле включения служба будет автоматически блокировать приложения, когда время закончится.</string>
-    <string name="usage_stats_instructions">Для учёта времени приложений выдайте разрешение на статистику использования:\n\n1. Нажмите «Настроить статистику использования»\n2. Найдите «Lodo-Lock» в списке приложений\n3. Включите «Разрешить доступ к статистике использования»\n4. Вернитесь в приложение\n\nБез этого разрешения приложение не сможет учитывать время других приложений.</string>
+    <string name="accessibility_instructions">Для блокировки приложений включите службу специальных возможностей:\n\n1. Нажмите «Настроить службу специальных возможностей»\n2. Найдите «KidLock» в списке служб\n3. Включите переключатель рядом с KidLock\n4. Подтвердите включение службы\n\nПосле включения служба будет автоматически блокировать приложения, когда время закончится.</string>
+    <string name="usage_stats_instructions">Для учёта времени приложений выдайте разрешение на статистику использования:\n\n1. Нажмите «Настроить статистику использования»\n2. Найдите «KidLock» в списке приложений\n3. Включите «Разрешить доступ к статистике использования»\n4. Вернитесь в приложение\n\nБез этого разрешения приложение не сможет учитывать время других приложений.</string>
     <string name="section_schedule">Расписание</string>
     <string name="schedule_enabled">Включить расписание</string>
     <string name="schedule_only_warning">Внимание: режим только расписания — в разрешённые часы дневной лимит времени не действует.</string>
@@ -187,10 +187,10 @@
     <string name="device_admin_active">Включена</string>
     <string name="device_admin_inactive">Не включена</string>
     <string name="btn_activate_device_admin">Включить защиту</string>
-    <string name="onboarding_accessibility_steps">1. Откройте настройки специальных возможностей.\n2. Найдите Lodo-Lock в списке служб.\n3. Включите переключатель и подтвердите.\n4. Вернитесь в приложение.</string>
-    <string name="onboarding_usage_stats_steps">1. Откройте настройки доступа к использованию.\n2. Выберите Lodo-Lock в списке приложений.\n3. Включите доступ к статистике использования.\n4. Вернитесь в приложение.</string>
+    <string name="onboarding_accessibility_steps">1. Откройте настройки специальных возможностей.\n2. Найдите KidLock в списке служб.\n3. Включите переключатель и подтвердите.\n4. Вернитесь в приложение.</string>
+    <string name="onboarding_usage_stats_steps">1. Откройте настройки доступа к использованию.\n2. Выберите KidLock в списке приложений.\n3. Включите доступ к статистике использования.\n4. Вернитесь в приложение.</string>
     <string name="onboarding_autostart_title">Автозапуск</string>
-    <string name="onboarding_autostart_description">Запускать Lodo-Lock автоматически при включении телевизора, чтобы блокировка всегда работала.</string>
+    <string name="onboarding_autostart_description">Запускать KidLock автоматически при включении телевизора, чтобы блокировка всегда работала.</string>
     <string name="onboarding_autostart_enable">Да, включить автозапуск</string>
     <string name="onboarding_mode_title">Выберите режим защиты</string>
     <string name="onboarding_mode_description">Как ограничивать экранное время?</string>
