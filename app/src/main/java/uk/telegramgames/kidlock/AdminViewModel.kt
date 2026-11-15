@@ -76,6 +76,17 @@ class AdminViewModel(application: Application) : AndroidViewModel(application) {
     private val _isHttpEnabled = MutableLiveData<Boolean>()
     val isHttpEnabled: LiveData<Boolean> = _isHttpEnabled
 
+    /**
+     * Живая синхронизация с хранилищем: правки из веб-панели (телефон/ПК)
+     * моментально отражаются в открытой админ-панели на ТВ.
+     */
+    private val prefsListener =
+        android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            if (key == DataRepository.KEY_APP_LIMITS) {
+                loadAppLimits()
+            }
+        }
+
     data class AppLimitInfo(
         val packageName: String,
         val appName: String,
@@ -95,6 +106,12 @@ class AdminViewModel(application: Application) : AndroidViewModel(application) {
         checkPermissions()
         updateRemainingTime()
         loadScheduleSettings()
+        dataRepository.registerPrefsListener(prefsListener)
+    }
+
+    override fun onCleared() {
+        dataRepository.unregisterPrefsListener(prefsListener)
+        super.onCleared()
     }
 
     fun loadSettings() {

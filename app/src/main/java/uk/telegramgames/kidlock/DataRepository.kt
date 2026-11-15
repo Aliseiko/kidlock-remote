@@ -65,7 +65,7 @@ class DataRepository private constructor(context: Context) {
         private const val MAX_TIME_WINDOWS = 10
 
         // Per-app daily time budgets: pkg -> minutes per day (empty key set = no per-app limit)
-        private const val KEY_APP_LIMITS = "per_app_limits_json"
+        const val KEY_APP_LIMITS = "per_app_limits_json"
 
         // Remote web panel (Stage 2): served by the accessibility service process
         private const val KEY_HTTP_ENABLED = "http_enabled"
@@ -438,6 +438,15 @@ class DataRepository private constructor(context: Context) {
 
     fun setHttpEnabled(enabled: Boolean) {
         prefs.edit().putBoolean(KEY_HTTP_ENABLED, enabled).apply()
+    }
+
+    /** Живая синхронизация: подписка на изменения хранилища (в т.ч. из веб-панели). */
+    fun registerPrefsListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        prefs.registerOnSharedPreferenceChangeListener(listener)
+    }
+
+    fun unregisterPrefsListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        prefs.unregisterOnSharedPreferenceChangeListener(listener)
     }
 
     fun getScheduleUnlockUntil(): Long {
