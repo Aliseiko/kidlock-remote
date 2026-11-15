@@ -67,6 +67,10 @@ class DataRepository private constructor(context: Context) {
         // Per-app daily time budgets: pkg -> minutes per day (empty key set = no per-app limit)
         private const val KEY_APP_LIMITS = "per_app_limits_json"
 
+        // Remote web panel (Stage 2): served by the accessibility service process
+        private const val KEY_HTTP_ENABLED = "http_enabled"
+        const val HTTP_PORT = 8080
+
         // Timer mode key
         private const val KEY_TIMER_ENABLED = "timer_enabled"
 
@@ -425,6 +429,15 @@ class DataRepository private constructor(context: Context) {
         }
         val json = if (current.isEmpty()) "" else org.json.JSONObject(current).toString()
         prefs.edit().putString(KEY_APP_LIMITS, json).apply()
+    }
+
+    // Remote web panel
+    fun isHttpEnabled(): Boolean {
+        return prefs.getBoolean(KEY_HTTP_ENABLED, true)
+    }
+
+    fun setHttpEnabled(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_HTTP_ENABLED, enabled).apply()
     }
 
     fun getScheduleUnlockUntil(): Long {

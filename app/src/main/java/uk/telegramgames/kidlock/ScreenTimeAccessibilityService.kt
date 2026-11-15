@@ -60,6 +60,7 @@ class ScreenTimeAccessibilityService : AccessibilityService() {
         }
 
         startPeriodicCheck()
+        RemoteHttpServer.startIfEnabled(this) { message -> Log.d(TAG, message) }
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
@@ -275,6 +276,7 @@ class ScreenTimeAccessibilityService : AccessibilityService() {
     override fun onDestroy() {
         super.onDestroy()
         stopPeriodicCheck()
+        RemoteHttpServer.stopIfRunning()
     }
 
     private fun startPeriodicCheck() {

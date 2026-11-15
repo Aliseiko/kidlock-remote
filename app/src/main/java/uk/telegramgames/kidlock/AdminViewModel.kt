@@ -73,6 +73,9 @@ class AdminViewModel(application: Application) : AndroidViewModel(application) {
     private val _isDeviceAdminActive = MutableLiveData<Boolean>()
     val isDeviceAdminActive: LiveData<Boolean> = _isDeviceAdminActive
 
+    private val _isHttpEnabled = MutableLiveData<Boolean>()
+    val isHttpEnabled: LiveData<Boolean> = _isHttpEnabled
+
     data class AppLimitInfo(
         val packageName: String,
         val appName: String,
@@ -106,6 +109,7 @@ class AdminViewModel(application: Application) : AndroidViewModel(application) {
         val blockingEnabled = dataRepository.isBlockingEnabled()
         _isBlockingEnabled.value = blockingEnabled
         _isTimerEnabled.value = dataRepository.isTimerEnabled()
+        _isHttpEnabled.value = dataRepository.isHttpEnabled()
 
         val isAccessibilityEnabled = ScreenTimeAccessibilityService.isServiceEnabled(
             getApplication()
@@ -401,6 +405,31 @@ class AdminViewModel(application: Application) : AndroidViewModel(application) {
         dataRepository.setAppLimit(packageName, null)
         loadAppLimits()
         _message.value = getApplication<Application>().getString(R.string.app_limit_removed, appName)
+    }
+
+    // --- Remote web panel ---
+
+    fun setHttpEnabled(enabled: Boolean) {
+        dataRepository.setHttpEnabled(enabled)
+        if (enabled) {
+            RemoteHttpServer.startIfEnabled(getApplication()) { }
+            val ip = getLanIpAddress() ?: "<ip-ТВ>"
+            _message.value = getApplication<Application>().getString(R.string.http_enabled_message, ip, DataRepository.HTTP_PORT)
+        } else {
+            RemoteHttpServer.stopIfRunning()
+            _message.value = getApplication<Application>().getString(R.string.http_disabled_message)
+        }
+        _isHttpEnabled.value = enabled
+    }
+
+    private fun getLanIpAddress(): String? = try {
+        java.net.NetworkInterface.getNetworkInterfaces().asSequence()
+            .filter { it.isUp && !it.isLoopback }
+            .flatMap { it.inetAddresses.asSequence() }
+            .firstOrNull { it is java.net.Inet4Address && it.hostAddress?.startsWith("192.168.") == true }
+            ?.hostAddress
+    } catch (e: Exception) {
+        null
     }
 
     fun checkDeviceAdminStatus() {

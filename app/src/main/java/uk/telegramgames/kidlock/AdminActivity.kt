@@ -80,6 +80,8 @@ class AdminActivity : AppCompatActivity() {
     private lateinit var tvOverlayStatus: TextView
     private lateinit var tvOverlayInstructions: TextView
     private lateinit var btnOpenOverlaySettings: Button
+
+    private lateinit var switchHttpEnabled: Switch
     
     private lateinit var tvAboutVersion: TextView
     
@@ -162,6 +164,8 @@ class AdminActivity : AppCompatActivity() {
         tvOverlayStatus = findViewById(R.id.tvOverlayStatus)
         tvOverlayInstructions = findViewById(R.id.tvOverlayInstructions)
         btnOpenOverlaySettings = findViewById(R.id.btnOpenOverlaySettings)
+
+        switchHttpEnabled = findViewById(R.id.switchHttpEnabled)
 
         tvAboutVersion = findViewById(R.id.tvAboutVersion)
 
@@ -415,6 +419,10 @@ layoutSectionSchedule.visibility = if (sectionId == 7) View.VISIBLE else View.GO
             }
         }
 
+        viewModel.isHttpEnabled.observe(this) { enabled ->
+            switchHttpEnabled.isChecked = enabled
+        }
+
         viewModel.appLimits.observe(this) { limits ->
             appLimitAdapter.updateItems(limits)
             tvNoAppLimits.visibility = if (limits.isEmpty()) View.VISIBLE else View.GONE
@@ -501,6 +509,10 @@ layoutSectionSchedule.visibility = if (sectionId == 7) View.VISIBLE else View.GO
 
         switchTimerEnabled.setOnCheckedChangeListener { _, isChecked ->
             viewModel.setTimerEnabled(isChecked)
+        }
+
+        switchHttpEnabled.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.setHttpEnabled(isChecked)
         }
 
         btnExit.setOnClickListener {

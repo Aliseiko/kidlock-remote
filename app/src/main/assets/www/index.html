@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KidLock Remote</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- Экран входа -->
+  <section id="screen-login">
+    <h1>KidLock Remote</h1>
+    <p class="hint">Введите родительский PIN (6 цифр)</p>
+    <input id="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="••••••">
+    <button id="btnLogin">Войти</button>
+    <p id="login-error" class="error"></p>
+  </section>
+
+  <!-- Панель -->
+  <section id="screen-panel" hidden>
+    <header>
+      <h1>KidLock Remote</h1>
+      <button id="btnLogout" class="ghost">Выйти</button>
+    </header>
+
+    <!-- Статус -->
+    <div class="card">
+      <h2>Статус</h2>
+      <div id="status-lines">
+        <p>Режим: <b id="st-mode">—</b></p>
+        <p>Осталось на сегодня: <b id="st-remaining">—</b></p>
+        <p>Дневной лимит: <b id="st-limit">—</b></p>
+        <p>До завтра: <b id="st-unlocked">—</b></p>
+      </div>
+      <div class="row">
+        <button id="btn-unlock-today">Открыть до завтра</button>
+        <button id="btn-reset-today" class="ghost">Сбросить счётчик дня</button>
+      </div>
+    </div>
+
+    <!-- Добавить время -->
+    <div class="card">
+      <h2>Дать время</h2>
+      <div class="row">
+        <button data-add="5">+5 мин</button>
+        <button data-add="10">+10 мин</button>
+        <button data-add="15">+15 мин</button>
+        <button data-add="30">+30 мин</button>
+        <button data-add="60">+60 мин</button>
+      </div>
+    </div>
+
+    <!-- Глобальный лимит -->
+    <div class="card">
+      <h2>Общий дневной лимит</h2>
+      <div class="row">
+        <input id="global-limit" type="number" min="0" step="5" style="width:90px">
+        <span>минут</span>
+        <button id="btn-set-limit">Сохранить</button>
+      </div>
+    </div>
+
+    <!-- Лимиты приложений -->
+    <div class="card">
+      <h2>Лимиты приложений</h2>
+      <table id="table-app-limits">
+        <thead><tr><th>Приложение</th><th>Лимит</th><th>Использовано</th><th></th></tr></thead>
+        <tbody id="tbody-app-limits"></tbody>
+      </table>
+      <div class="row">
+        <select id="select-app"></select>
+        <input id="app-limit-minutes" type="number" min="5" step="5" value="30" style="width:80px">
+        <span>мин/день</span>
+        <button id="btn-add-app-limit">Задать</button>
+      </div>
+    </div>
+
+    <!-- Расписание -->
+    <div class="card">
+      <h2>Расписание</h2>
+      <p id="schedule-state"></p>
+      <table id="table-windows">
+        <thead><tr><th>Тип</th><th>Время</th><th>Дни</th><th>Приложения</th><th></th></tr></thead>
+        <tbody id="tbody-windows"></tbody>
+      </table>
+    </div>
+
+    <p class="hint">KidLock Remote · <span id="st-version"></span> · данные не покидают вашу сеть</p>
+  </section>
+</div>
+<script src="/app.js"></script>
+</body>
+</html>

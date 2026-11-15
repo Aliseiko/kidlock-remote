@@ -272,4 +272,8 @@
     <string name="lock_app_limit_reason_generic">App screen time is over for today.</string>
     <string name="app_limit_reached_title">App limit reached</string>
     <string name="app_limit_reached_message">Time for this app is over for today.</string>
+    <!-- Remote web panel -->
+    <string name="http_enabled_label">Web panel (phone/PC)</string>
+    <string name="http_enabled_message">Web panel enabled: http://%1$s:%2$d (PIN — same as on TV)</string>
+    <string name="http_disabled_message">Web panel disabled</string>
 </resources>

@@ -274,4 +274,8 @@
     <string name="lock_app_limit_reason_generic">Le temps d\'écran de l\'application est terminé.</string>
     <string name="app_limit_reached_title">Limite d\'application</string>
     <string name="app_limit_reached_message">Le temps pour cette application est terminé.</string>
+    <!-- Remote web panel -->
+    <string name="http_enabled_label">Panneau web (téléphone/PC)</string>
+    <string name="http_enabled_message">Panneau web activé : http://%1$s:%2$d (PIN — comme sur la TV)</string>
+    <string name="http_disabled_message">Panneau web désactivé</string>
 </resources>

@@ -217,4 +217,8 @@
     <string name="lock_app_limit_reason_generic">Лимит времени приложения на сегодня закончился.</string>
     <string name="app_limit_reached_title">Лимит приложения</string>
     <string name="app_limit_reached_message">Время для этого приложения на сегодня закончилось.</string>
+    <!-- Remote web panel -->
+    <string name="http_enabled_label">Веб-панель (телефон/ПК)</string>
+    <string name="http_enabled_message">Веб-панель включена: http://%1$s:%2$d (PIN — как на ТВ)</string>
+    <string name="http_disabled_message">Веб-панель выключена</string>
 </resources>
