@@ -702,7 +702,15 @@
                     android:textSize="24sp"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    android:layout_marginBottom="16dp" />
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_limits_independent_hint"
+                    android:textColor="@color/admin_text_secondary"
+                    android:textSize="13sp"
+                    android:layout_marginBottom="12dp" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvAppLimits"

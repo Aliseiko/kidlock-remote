@@ -130,6 +130,14 @@ class ScreenTimeAccessibilityService : AccessibilityService() {
 
         lastKnownPackageName = packageName
 
+        // Per-app бюджеты — независимый источник блокировки:
+        // работают даже при выключенном переключателе режимов (таймер/расписание).
+        if (shouldBlockByAppLimit(packageName)) {
+            Log.d(TAG, "BLOCKED by app limit: $packageName")
+            blockAppLaunch(packageName, "APP_LIMIT")
+            return
+        }
+
         if (!dataRepository.isBlockingEnabled()) {
             return
         }
@@ -146,12 +154,6 @@ class ScreenTimeAccessibilityService : AccessibilityService() {
         if (shouldBlockBySchedule(packageName)) {
             Log.d(TAG, "BLOCKED by schedule: $packageName")
             blockAppLaunch(packageName)
-            return
-        }
-
-        if (shouldBlockByAppLimit(packageName)) {
-            Log.d(TAG, "BLOCKED by app limit: $packageName")
-            blockAppLaunch(packageName, "APP_LIMIT")
             return
         }
 
@@ -313,6 +315,16 @@ class ScreenTimeAccessibilityService : AccessibilityService() {
             return
         }
 
+        // Per-app бюджеты — независимы от переключателя режимов.
+        val earlyPkg = getCurrentPackageName()
+        if (earlyPkg != null && earlyPkg != this.packageName &&
+            !isSystemPackage(earlyPkg) && shouldBlockByAppLimit(earlyPkg)
+        ) {
+            Log.d(TAG, "PERIODIC BLOCKED by app limit: $earlyPkg")
+            blockAppLaunch(earlyPkg, "APP_LIMIT")
+            return
+        }
+
         if (!dataRepository.isBlockingEnabled()) {
             return
         }
@@ -352,12 +364,6 @@ if (isSystemPackage(currentPackageName) && !isGuardPackage(currentPackageName)) 
         if (shouldBlockBySchedule(currentPackageName)) {
             Log.d(TAG, "PERIODIC BLOCKED by schedule: $currentPackageName")
             blockAppLaunch(currentPackageName)
-            return
-        }
-
-        if (shouldBlockByAppLimit(currentPackageName)) {
-            Log.d(TAG, "PERIODIC BLOCKED by app limit: $currentPackageName")
-            blockAppLaunch(currentPackageName, "APP_LIMIT")
             return
         }
 
