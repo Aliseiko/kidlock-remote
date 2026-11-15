@@ -59,6 +59,37 @@ class UsageStatsHelper(private val context: Context) {
         return totalTime
     }
 
+    /**
+     * Использованное за сегодня время (в минутах) для конкретного пакета.
+     * null — нет разрешения Usage Stats: блокировать по неизвестным данным нельзя.
+     */
+    fun getTodayUsageMinutesForPackage(packageName: String): Int? {
+        if (!hasUsageStatsPermission()) return null
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return 0
+
+        val usageStatsManager = usageStatsManager ?: return 0
+        val todayStart = TimeManager.getTodayStartTime()
+        val now = System.currentTimeMillis()
+
+        return try {
+            val usageStatsList = usageStatsManager.queryUsageStats(
+                UsageStatsManager.INTERVAL_DAILY,
+                todayStart,
+                now
+            ) ?: return 0
+
+            var totalMillis = 0L
+            for (usageStats in usageStatsList) {
+                if (usageStats.packageName == packageName) {
+                    totalMillis += usageStats.totalTimeInForeground
+                }
+            }
+            TimeManager.millisToMinutes(totalMillis)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
     fun getRemainingTimeMinutes(
         dailyLimitMinutes: Int,
         addedTimeMinutes: Int

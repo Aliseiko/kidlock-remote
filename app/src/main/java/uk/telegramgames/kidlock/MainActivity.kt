@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private var codeInputWatcher: TextWatcher? = null
     private var isUpdatingCodeInput = false
     private var blockReason: String? = null
+    private var blockedPackageName: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +51,7 @@ class MainActivity : AppCompatActivity() {
         btnAdmin = findViewById(R.id.btnAdmin)
 
         blockReason = intent.getStringExtra("BLOCK_REASON")
+        blockedPackageName = intent.getStringExtra("BLOCK_PACKAGE")
 
         setupObservers()
         setupCodeInput()
@@ -74,6 +76,7 @@ class MainActivity : AppCompatActivity() {
         when (blockReason) {
             "SCHEDULE" -> setupScheduleLock()
             "TIMER" -> setupTimerLock()
+            "APP_LIMIT" -> setupAppLimitLock()
             "GUARD" -> setupNeutralScreen(getString(R.string.guard_blocked_message))
             "SERVICE_DISABLED" -> setupNeutralScreen(getString(R.string.service_disabled_message))
             // Ouverte manuellement (launcher), au boot, ou raison inconnue :
@@ -163,6 +166,33 @@ class MainActivity : AppCompatActivity() {
         // Heure de déblocage (demain)
         tvUnlockTime.text = getString(R.string.lock_timer_unlock_time)
         tvUnlockTime.visibility = View.VISIBLE
+    }
+
+    private fun setupAppLimitLock() {
+        val appName = blockedPackageName?.let { pkg ->
+            try {
+                packageManager.getApplicationLabel(
+                    packageManager.getApplicationInfo(pkg, 0)
+                ).toString()
+            } catch (e: Exception) {
+                null
+            }
+        }
+
+        tvBlockReason.text = if (appName != null) {
+            getString(R.string.lock_app_limit_reason, appName)
+        } else {
+            getString(R.string.lock_app_limit_reason_generic)
+        }
+        tvBlockReason.visibility = View.VISIBLE
+
+        tvRemainingTime.visibility = View.GONE
+
+        // Разблокировка — завтра (как у таймера)
+        tvUnlockTime.text = getString(R.string.lock_timer_unlock_time)
+        tvUnlockTime.visibility = View.VISIBLE
+
+        findViewById<TextView>(R.id.tvCodeLabel).text = getString(R.string.enter_code)
     }
 
     private fun setupObservers() {

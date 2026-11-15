@@ -64,6 +64,9 @@ class DataRepository private constructor(context: Context) {
         private const val KEY_SCHEDULE_UNLOCK_UNTIL = "schedule_unlock_until"
         private const val MAX_TIME_WINDOWS = 10
 
+        // Per-app daily time budgets: pkg -> minutes per day (empty key set = no per-app limit)
+        private const val KEY_APP_LIMITS = "per_app_limits_json"
+
         // Timer mode key
         private const val KEY_TIMER_ENABLED = "timer_enabled"
 
@@ -392,6 +395,37 @@ class DataRepository private constructor(context: Context) {
     }
 
     fun getMaxTimeWindows(): Int = MAX_TIME_WINDOWS
+
+    // Per-app daily budgets
+    fun getAppLimits(): Map<String, Int> {
+        val json = prefs.getString(KEY_APP_LIMITS, "") ?: ""
+        if (json.isEmpty()) return emptyMap()
+        return try {
+            val obj = org.json.JSONObject(json)
+            val result = mutableMapOf<String, Int>()
+            val keys = obj.keys()
+            while (keys.hasNext()) {
+                val key = keys.next()
+                val minutes = obj.optInt(key, -1)
+                if (minutes > 0) result[key] = minutes
+            }
+            result
+        } catch (e: Exception) {
+            Log.w("KidLock", "getAppLimits: malformed JSON, ignoring", e)
+            emptyMap()
+        }
+    }
+
+    fun setAppLimit(packageName: String, minutes: Int?) {
+        val current = getAppLimits().toMutableMap()
+        if (minutes == null || minutes <= 0) {
+            current.remove(packageName)
+        } else {
+            current[packageName] = minutes
+        }
+        val json = if (current.isEmpty()) "" else org.json.JSONObject(current).toString()
+        prefs.edit().putString(KEY_APP_LIMITS, json).apply()
+    }
 
     fun getScheduleUnlockUntil(): Long {
         return prefs.getLong(KEY_SCHEDULE_UNLOCK_UNTIL, 0)

@@ -73,6 +73,16 @@ class AdminViewModel(application: Application) : AndroidViewModel(application) {
     private val _isDeviceAdminActive = MutableLiveData<Boolean>()
     val isDeviceAdminActive: LiveData<Boolean> = _isDeviceAdminActive
 
+    data class AppLimitInfo(
+        val packageName: String,
+        val appName: String,
+        val limitMinutes: Int,
+        val usedMinutes: Int
+    )
+
+    private val _appLimits = MutableLiveData<List<AppLimitInfo>>()
+    val appLimits: LiveData<List<AppLimitInfo>> = _appLimits
+
     private val _message = MutableLiveData<String?>()
     val message: LiveData<String?> = _message
 
@@ -354,6 +364,43 @@ class AdminViewModel(application: Application) : AndroidViewModel(application) {
         dataRepository.removeTimeWindow(id)
         _timeWindows.value = dataRepository.getTimeWindows()
         _message.value = getApplication<Application>().getString(R.string.schedule_window_removed)
+    }
+
+    // --- Per-app daily budgets ---
+
+    fun loadAppLimits() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val limits = dataRepository.getAppLimits()
+            val pm = getApplication<Application>().packageManager
+            val infos = limits.map { (pkg, minutes) ->
+                val label = try {
+                    pm.getApplicationLabel(pm.getApplicationInfo(pkg, 0)).toString()
+                } catch (e: Exception) {
+                    pkg
+                }
+                val used = usageStatsHelper.getTodayUsageMinutesForPackage(pkg) ?: 0
+                AppLimitInfo(pkg, label, minutes, used)
+            }.sortedBy { it.appName.lowercase() }
+            _appLimits.postValue(infos)
+        }
+    }
+
+    fun setAppLimit(packageName: String, minutes: Int) {
+        dataRepository.setAppLimit(packageName, minutes)
+        loadAppLimits()
+        val appName = _appLimits.value?.firstOrNull { it.packageName == packageName }?.appName ?: packageName
+        _message.value = getApplication<Application>().getString(
+            R.string.app_limit_set_format,
+            appName,
+            TimeManager.formatMinutes(getApplication(), minutes)
+        )
+    }
+
+    fun removeAppLimit(packageName: String) {
+        val appName = _appLimits.value?.firstOrNull { it.packageName == packageName }?.appName ?: packageName
+        dataRepository.setAppLimit(packageName, null)
+        loadAppLimits()
+        _message.value = getApplication<Application>().getString(R.string.app_limit_removed, appName)
     }
 
     fun checkDeviceAdminStatus() {

@@ -88,9 +88,19 @@ class ScreenTimeAccessibilityService : AccessibilityService() {
     private fun shouldBlockBySchedule(): Boolean {
         if (!dataRepository.isScheduleEnabled()) return false
         if (ScheduleManager.isScheduleBypassed(dataRepository)) return false
-        
+
         val now = Calendar.getInstance()
         return ScheduleManager.getActiveBlockWindow(now, dataRepository) != null
+    }
+
+    /**
+     * Per-app daily budget: true if the app has its own limit and today's usage reached it.
+     * Without usage stats permission returns false — нельзя блокировать по неизвестным данным.
+     */
+    private fun shouldBlockByAppLimit(packageName: String): Boolean {
+        val limitMinutes = dataRepository.getAppLimits()[packageName] ?: return false
+        val usedMinutes = usageStatsHelper.getTodayUsageMinutesForPackage(packageName) ?: return false
+        return usedMinutes >= limitMinutes
     }
 
     /**
@@ -135,6 +145,12 @@ class ScreenTimeAccessibilityService : AccessibilityService() {
         if (shouldBlockBySchedule(packageName)) {
             Log.d(TAG, "BLOCKED by schedule: $packageName")
             blockAppLaunch(packageName)
+            return
+        }
+
+        if (shouldBlockByAppLimit(packageName)) {
+            Log.d(TAG, "BLOCKED by app limit: $packageName")
+            blockAppLaunch(packageName, "APP_LIMIT")
             return
         }
 
@@ -204,26 +220,30 @@ class ScreenTimeAccessibilityService : AccessibilityService() {
         val kidLockIntent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             putExtra("BLOCK_REASON", reason)
+            if (reason == "APP_LIMIT" && packageName != null) {
+                putExtra("BLOCK_PACKAGE", packageName)
+            }
         }
         startActivity(kidLockIntent)
 
-        // Pas de notification pour les guards (raison = fausse alerte sinon)
-        if (forcedReason == null) {
-            showBlockNotification(reason == "SCHEDULE")
+        // Pas de notification pour les guards (raison = fausse alerte sinon).
+        // APP_LIMIT оповещает всегда — ребёнок должен понять, почему приложение закрылось.
+        if (forcedReason == null || forcedReason == "APP_LIMIT") {
+            showBlockNotification(reason)
         }
     }
 
-    private fun showBlockNotification(isScheduleBlock: Boolean) {
+    private fun showBlockNotification(reason: String) {
         val channelId = "screen_time_block"
-        val title = if (isScheduleBlock) {
-            getString(R.string.schedule_blocked_title)
-        } else {
-            getString(R.string.time_limit_reached)
+        val title = when (reason) {
+            "SCHEDULE" -> getString(R.string.schedule_blocked_title)
+            "APP_LIMIT" -> getString(R.string.app_limit_reached_title)
+            else -> getString(R.string.time_limit_reached)
         }
-        val text = if (isScheduleBlock) {
-            getString(R.string.schedule_blocked_message)
-        } else {
-            getString(R.string.time_limit_reached_message)
+        val text = when (reason) {
+            "SCHEDULE" -> getString(R.string.schedule_blocked_message)
+            "APP_LIMIT" -> getString(R.string.app_limit_reached_message)
+            else -> getString(R.string.time_limit_reached_message)
         }
         val notification = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(android.R.drawable.ic_dialog_alert)
@@ -330,6 +350,12 @@ if (isSystemPackage(currentPackageName) && !isGuardPackage(currentPackageName)) 
         if (shouldBlockBySchedule(currentPackageName)) {
             Log.d(TAG, "PERIODIC BLOCKED by schedule: $currentPackageName")
             blockAppLaunch(currentPackageName)
+            return
+        }
+
+        if (shouldBlockByAppLimit(currentPackageName)) {
+            Log.d(TAG, "PERIODIC BLOCKED by app limit: $currentPackageName")
+            blockAppLaunch(currentPackageName, "APP_LIMIT")
             return
         }
 

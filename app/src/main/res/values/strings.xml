@@ -258,4 +258,20 @@
     <string name="onboarding_mode_schedule_desc">Définir des créneaux horaires autorisés</string>
     <string name="onboarding_schedule_hint">Plage horaire : le blocage s\'activera dès qu\'une plage sera configurée, dans la section Plages de l\'administration.</string>
     <string name="schedule_requires_window">Ajoutez d\'abord au moins une plage horaire, puis activez le planning.</string>
+    <!-- Per-app daily budgets -->
+    <string name="section_app_limits">Limites par app</string>
+    <string name="app_limits_no_limits">Aucune limite configurée</string>
+    <string name="app_limits_add">+ Ajouter une limite</string>
+    <string name="app_limits_row_format">%1$s — %2$s</string>
+    <string name="app_limits_used_format">Utilisé aujourd\'hui : %1$s</string>
+    <string name="app_limits_select_title">Choisir une application</string>
+    <string name="app_limits_pick_minutes">Limite par jour :</string>
+    <string name="app_limit_set_format">Limite pour %1$s : %2$s</string>
+    <string name="app_limit_removed">Limite pour %1$s supprimée</string>
+    <string name="app_limit_remove_title">Supprimer la limite</string>
+    <string name="app_limit_remove_message">Supprimer la limite pour %1$s ?</string>
+    <string name="lock_app_limit_reason">Le temps d\'écran pour %1$s est terminé.</string>
+    <string name="lock_app_limit_reason_generic">Le temps d\'écran de l\'application est terminé.</string>
+    <string name="app_limit_reached_title">Limite d\'application</string>
+    <string name="app_limit_reached_message">Le temps pour cette application est terminé.</string>
 </resources>

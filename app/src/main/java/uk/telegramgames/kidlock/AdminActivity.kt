@@ -33,6 +33,7 @@ class AdminActivity : AppCompatActivity() {
     private lateinit var layoutSectionAccess: View
     private lateinit var layoutSectionSystem: View
     private lateinit var layoutSectionSchedule: View
+    private lateinit var layoutSectionAppLimits: View
     private lateinit var layoutSectionAbout: View
     
     // Schedule UI
@@ -41,6 +42,12 @@ class AdminActivity : AppCompatActivity() {
     private lateinit var tvNoWindows: TextView
     private lateinit var btnAddWindow: Button
     private lateinit var timeWindowAdapter: TimeWindowAdapter
+
+    // App limits UI
+    private lateinit var rvAppLimits: RecyclerView
+    private lateinit var tvNoAppLimits: TextView
+    private lateinit var btnAddAppLimit: Button
+    private lateinit var appLimitAdapter: AppLimitAdapter
     
     // Device Admin UI
     private lateinit var tvDeviceAdminStatus: TextView
@@ -126,6 +133,7 @@ class AdminActivity : AppCompatActivity() {
         layoutSectionAccess = findViewById(R.id.layout_section_access)
         layoutSectionSystem = findViewById(R.id.layout_section_system)
         layoutSectionSchedule = findViewById(R.id.layout_section_schedule)
+        layoutSectionAppLimits = findViewById(R.id.layout_section_app_limits)
         layoutSectionAbout = findViewById(R.id.layout_section_about)
 
         tvRemainingTime = findViewById(R.id.tvRemainingTime)
@@ -163,6 +171,11 @@ class AdminActivity : AppCompatActivity() {
         tvNoWindows = findViewById(R.id.tvNoWindows)
         btnAddWindow = findViewById(R.id.btnAddWindow)
 
+        // App limits UI
+        rvAppLimits = findViewById(R.id.rvAppLimits)
+        tvNoAppLimits = findViewById(R.id.tvNoAppLimits)
+        btnAddAppLimit = findViewById(R.id.btnAddAppLimit)
+
         // Device Admin UI
         tvDeviceAdminStatus = findViewById(R.id.tvDeviceAdminStatus)
         btnActivateDeviceAdmin = findViewById(R.id.btnActivateDeviceAdmin)
@@ -182,6 +195,7 @@ class AdminActivity : AppCompatActivity() {
     private fun setupTabs() {
         val tabIds = listOf(
             R.id.tab_schedule to 7,
+            R.id.tab_app_limits to 8,
             R.id.tab_dashboard to 1,
             R.id.tab_access to 3,
             R.id.tab_settings to 2,
@@ -224,6 +238,7 @@ class AdminActivity : AppCompatActivity() {
         // puis Accès, Paramètres, Système, À propos, Quitter.
         val sections = listOf(
             AdminSection(7, getString(R.string.section_schedule), true),
+            AdminSection(8, getString(R.string.section_app_limits)),
             AdminSection(1, getString(R.string.section_dashboard), true),
             AdminSection(3, getString(R.string.section_access)),
             AdminSection(2, getString(R.string.section_settings)),
@@ -252,12 +267,14 @@ class AdminActivity : AppCompatActivity() {
         layoutSectionAccess.visibility = if (sectionId == 3) View.VISIBLE else View.GONE
         layoutSectionSystem.visibility = if (sectionId == 4) View.VISIBLE else View.GONE
 layoutSectionSchedule.visibility = if (sectionId == 7) View.VISIBLE else View.GONE
+        layoutSectionAppLimits.visibility = if (sectionId == 8) View.VISIBLE else View.GONE
         layoutSectionAbout.visibility = if (sectionId == 6) View.VISIBLE else View.GONE
 
         highlightActiveTab(sectionId)
 
         when (sectionId) {
             1 -> btnSetLimit.requestFocus()
+            8 -> btnAddAppLimit.requestFocus()
             2 -> etNewPin.requestFocus()
             3 -> {
                 val hasCodes = (viewModel.codes.value?.isNotEmpty() == true)
@@ -291,6 +308,14 @@ layoutSectionSchedule.visibility = if (sectionId == 7) View.VISIBLE else View.GO
         )
         rvTimeWindows.layoutManager = LinearLayoutManager(this)
         rvTimeWindows.adapter = timeWindowAdapter
+
+        appLimitAdapter = AppLimitAdapter(
+            items = emptyList(),
+            formatMinutes = { minutes -> TimeManager.formatMinutes(this, minutes) },
+            onRemove = { info -> confirmRemoveAppLimit(info) }
+        )
+        rvAppLimits.layoutManager = LinearLayoutManager(this)
+        rvAppLimits.adapter = appLimitAdapter
     }
 
     private fun setupObservers() {
@@ -388,6 +413,12 @@ layoutSectionSchedule.visibility = if (sectionId == 7) View.VISIBLE else View.GO
             } else {
                 getString(R.string.device_admin_inactive)
             }
+        }
+
+        viewModel.appLimits.observe(this) { limits ->
+            appLimitAdapter.updateItems(limits)
+            tvNoAppLimits.visibility = if (limits.isEmpty()) View.VISIBLE else View.GONE
+            rvAppLimits.visibility = if (limits.isEmpty()) View.GONE else View.VISIBLE
         }
     }
 
@@ -493,6 +524,49 @@ layoutSectionSchedule.visibility = if (sectionId == 7) View.VISIBLE else View.GO
         btnActivateDeviceAdmin.setOnClickListener {
             viewModel.openDeviceAdminSettings()
         }
+
+        // App limits listener
+        btnAddAppLimit.setOnClickListener {
+            showAddAppLimitDialog()
+        }
+    }
+
+    private fun showAddAppLimitDialog() {
+        showAppSelectorDialog(emptyList(), title = getString(R.string.app_limits_select_title)) { selectedPackages ->
+            if (selectedPackages.isEmpty()) return@showAppSelectorDialog
+            showMinutesPickerForApps(selectedPackages)
+        }
+    }
+
+    private fun showMinutesPickerForApps(packages: List<String>) {
+        // Выбор длительности в формате «часы:минуты», как у глобального лимита
+        TimePickerDialog(
+            this,
+            { _, hourOfDay, minute ->
+                val minutes = hourOfDay * 60 + minute
+                if (minutes <= 0) {
+                    viewModel.showMessage(getString(R.string.limit_negative_error))
+                    return@TimePickerDialog
+                }
+                packages.forEach { pkg -> viewModel.setAppLimit(pkg, minutes) }
+            },
+            0,
+            30,
+            true
+        ).apply {
+            setTitle(getString(R.string.app_limits_pick_minutes))
+        }.show()
+    }
+
+    private fun confirmRemoveAppLimit(info: AdminViewModel.AppLimitInfo) {
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.app_limit_remove_title))
+            .setMessage(getString(R.string.app_limit_remove_message, info.appName))
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                viewModel.removeAppLimit(info.packageName)
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
     }
 
     private fun showAddTimeWindowDialog() {
@@ -751,7 +825,11 @@ layoutSectionSchedule.visibility = if (sectionId == 7) View.VISIBLE else View.GO
         btnSelectApps?.visibility = if (type == TimeWindowType.BLOCK && switchBlockAll?.isChecked != true) View.VISIBLE else View.GONE
     }
 
-    private fun showAppSelectorDialog(initialSelected: List<String>, onConfirm: (List<String>) -> Unit) {
+    private fun showAppSelectorDialog(
+        initialSelected: List<String>,
+        title: String = getString(R.string.schedule_select_apps_title),
+        onConfirm: (List<String>) -> Unit
+    ) {
         val packageManager = packageManager
         val installedApps = packageManager.getInstalledApplications(0)
             .filter { packageManager.getLaunchIntentForPackage(it.packageName) != null }
@@ -769,7 +847,7 @@ layoutSectionSchedule.visibility = if (sectionId == 7) View.VISIBLE else View.GO
         val adapter = AppSelectorAdapter(installedApps) { _, _ -> }
 
         val builder = AlertDialog.Builder(this)
-        builder.setTitle(getString(R.string.schedule_select_apps_title))
+        builder.setTitle(title)
 
         val recyclerView = RecyclerView(this).apply {
             layoutManager = LinearLayoutManager(this@AdminActivity)
@@ -810,6 +888,7 @@ layoutSectionSchedule.visibility = if (sectionId == 7) View.VISIBLE else View.GO
         viewModel.updateRemainingTime()
         viewModel.loadCodes()
         viewModel.loadScheduleSettings()
+        viewModel.loadAppLimits()
     }
 }
 
